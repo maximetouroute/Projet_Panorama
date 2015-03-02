@@ -62,3 +62,7 @@ Output-build.txt
 *.sdf
 *.sln
 *.opensdf
+
+*.cbp
+*.depend
+*.layout
