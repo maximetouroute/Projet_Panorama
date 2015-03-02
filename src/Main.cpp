@@ -8,14 +8,24 @@
 using namespace cv;
 using namespace std;
 
+// Diwala premier commit OLAH OH
+// Diwala premier commit OLAH OH
+// Diwala premier commit OLAH OH
+// Diwala premier commit OLAH OH
+// Diwala premier commit OLAH OH
+// Diwala premier commit OLAH OH
+// Diwala premier commit OLAH OH
+// Diwala premier commit OLAH OH
+
 int thresh = 1;
 int max_thresh = 10;
 
-Mat img = imread("./img/lena.jpg", CV_LOAD_IMAGE_COLOR);
+Mat img = imread("img/lena.jpg", CV_LOAD_IMAGE_COLOR);g
 Mat img2 = img.clone();
 
 void thresh_callback(int, void*);
 void save(int state, void* userdata);
+HALO.
 
 int main(int argc, char *argv[])
 {
