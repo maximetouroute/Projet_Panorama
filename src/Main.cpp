@@ -1,39 +1,29 @@
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 
-using namespace cv;
-using namespace std;
+#include "Panorama.cpp"
 
-// Diwala premier commit OLAH OH
-// Diwala premier commit OLAH OH
-// Diwala premier commit OLAH OH
-// Diwala premier commit OLAH OH
-// Diwala premier commit OLAH OH
-// Diwala premier commit OLAH OH
-// Diwala premier commit OLAH OH
-// Diwala premier commit OLAH OH
+
 
 int thresh = 1;
 int max_thresh = 10;
 
-Mat img = imread("img/lena.jpg", CV_LOAD_IMAGE_COLOR);g
-Mat img2 = img.clone();
+Mat img = imread("img/image_1.jpg", CV_LOAD_IMAGE_COLOR);
+Mat img2 = imread ("img/imag_2.jpg", CV_LOAD_IMAGE_COLOR);
 
 void thresh_callback(int, void*);
 void save(int state, void* userdata);
-HALO.
 
 int main(int argc, char *argv[])
 {
-	namedWindow("lena", CV_WINDOW_AUTOSIZE);
-	imshow("lena", img);
+    // Création d'une fenêtre
+	namedWindow("Projet Panorama", CV_WINDOW_AUTOSIZE);
 
-	createTrackbar(" Contour level:", "lena", &thresh, max_thresh, thresh_callback);
-	thresh_callback(0, 0);
+	// Création de deux fenêtres avec les deux images à fusionner
+	imshow("Image 1", img);
+	imshow("image 2", img);
+
+
+	//createTrackbar(" Contour level:", "lena", &thresh, max_thresh, thresh_callback);
+	//thresh_callback(0, 0);
 
 	waitKey(0);
 	return 0;
