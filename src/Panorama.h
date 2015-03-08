@@ -1,5 +1,6 @@
 
 #include "Canvas.h"
+#include "Detection.h"
 #define GRID_SIZE 128
 
 using namespace cv;
@@ -76,6 +77,9 @@ void panorama_process(Mat img1, Mat img2)
 
     image_to_grid(gray1, vect_part_img1, GRID_SIZE); // grid_size doit etre compatible avec l'image ! (pour l'instant TODO)
 
+    for(vector<Mat>::iterator it=vect_part_img1.begin(); it!=vect_part_img1.end(); it++){
+        detection_process(*it);
+    }
 
     imshow("grid", makeCanvas(vect_part_img1, 512, 4));
     imshow("img2 gray", gray2);
