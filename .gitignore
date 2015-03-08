@@ -27,7 +27,7 @@ TEST.
 *.exe
 *.out
 *.app
-
+/src/Main
 
 #ignore thumbnails created by windows
 Thumbs.db
