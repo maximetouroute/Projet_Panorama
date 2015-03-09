@@ -4,10 +4,9 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <cctype>
-
 #include <iterator>
+
 /**
  * @brief makeCanvas Makes composite image from the given images
  * @param vecMat Vector of Images.

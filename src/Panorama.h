@@ -10,7 +10,7 @@ using namespace std;
 * image_to_grid : convertit une image en grille de petites images
 * return: tableau de petites images
 */
-void image_to_grid(Mat img, Mat mat_array[], int grid_size)
+void image_to_grid(Mat img, vector<Mat>& mat_array, int grid_size)
 {
     // Pour l'instant, ne gère que le cas parfait où la grille peut se former sans problèmes !
     //Mat* mat_array= (Mat*) malloc(sizeof(Mat) * (img.rows*img.cols/grid_size));
@@ -35,19 +35,15 @@ void image_to_grid(Mat img, Mat mat_array[], int grid_size)
             {
 
                 // La zone de crop.
-                            // x           y           width       height
+                // x           y           width       height
                 Rect roi (j, i, grid_size, grid_size);
                 printf("%i,%i\n", j, i);
                 // Crop de la zone voulue.
-                mat_array[index] = img(roi).clone();
+                mat_array.push_back( img(roi).clone() );
 
             }
         }
-       // mat_return = mat_array.clone();
-
     }
-        // Boucle sur les lignes
-
 }
 
 
@@ -80,18 +76,17 @@ void panorama_process(Mat img1, Mat img2)
 
     Mat part_img1[gray1.rows*gray1.cols/GRID_SIZE];
 
-    image_to_grid(gray1, part_img1, GRID_SIZE); // grid_size doit etre compatible avec l'image !
-
-    // Utilisation d'un vecteur pour stocker les éléments
     vector<Mat> vect_part_img1;
 
-    for(int i = 0 ; i < 16 ; i++)
-    {
-        vect_part_img1.push_back(part_img1[i]);
-    }
+    image_to_grid(gray1, vect_part_img1, GRID_SIZE); // grid_size doit etre compatible avec l'image !
 
-        imshow("grid", makeCanvas(vect_part_img1, 512, 4));
-        imshow("img2 gray", gray2);
+    // Utilisation d'un vecteur pour stocker les éléments
+    //    vector<Mat> vect_part_img1;
+    printf("Hola\n");
+
+
+    imshow("grid", makeCanvas(vect_part_img1, 512, 4));
+    imshow("img2 gray", gray2);
 
 
     // Etape 2: A l'aide d'un algorithme, on attribue des poids à chaque case
