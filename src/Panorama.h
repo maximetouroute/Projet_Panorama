@@ -68,28 +68,22 @@ void panorama_process(Mat img1, Mat img2)
     cvtColor(img2, gray2, CV_RGB2GRAY );
 
     // Etape 1: On découpe la première image en petits éléments carrés
-    //imshow("Gray 1", gray1);
-    //imshow("Gray 2", gray2);
-    // On place les données
-    //Mat* part_img1 = image_to_grid(gray1, 10);
-    printf("Hola\n");
 
     Mat part_img1[gray1.rows*gray1.cols/GRID_SIZE];
 
+    // Stockage des parties d'images dans un vecteur
     vector<Mat> vect_part_img1;
 
-    image_to_grid(gray1, vect_part_img1, GRID_SIZE); // grid_size doit etre compatible avec l'image !
-
-    // Utilisation d'un vecteur pour stocker les éléments
-    //    vector<Mat> vect_part_img1;
-    printf("Hola\n");
+    image_to_grid(gray1, vect_part_img1, GRID_SIZE); // grid_size doit etre compatible avec l'image ! (pour l'instant TODO)
 
 
     imshow("grid", makeCanvas(vect_part_img1, 512, 4));
     imshow("img2 gray", gray2);
 
 
+
     // Etape 2: A l'aide d'un algorithme, on attribue des poids à chaque case
+
 
 
     // Plus le poids est élevé, plus la portion d'image a des zones d'intérêt faciles à identifier
@@ -117,6 +111,7 @@ void panorama_process(Mat img1, Mat img2)
     Et ça sera déjà bien.
 
     */
+
     printf("Hola sortie\n");
 }
 

@@ -6,11 +6,11 @@ Mat img2 = imread ("img/image_2.jpg", CV_LOAD_IMAGE_COLOR);
 int main(int argc, char *argv[])
 {
     // Création d'une fenêtre
-	namedWindow("Projet Panorama", CV_WINDOW_AUTOSIZE);
+	//namedWindow("Projet Panorama", CV_WINDOW_AUTOSIZE);
 
 	// Création de deux fenêtres avec les deux images à fusionner
-	imshow("image 1", img);
-	imshow("image 2", img2);
+	//imshow("image 1", img);
+	//imshow("image 2", img2);
 
     panorama_process(img, img2);
 	//createTrackbar(" Contour level:", "lena", &thresh, max_thresh, thresh_callback);
