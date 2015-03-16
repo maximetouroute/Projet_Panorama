@@ -1,6 +1,7 @@
 
 #include "Canvas.h"
 #include "Detection.h"
+#include "Merge.h"
 #define GRID_SIZE 128
 
 using namespace cv;
@@ -108,7 +109,9 @@ void panorama_process(Mat img1, Mat img2)
         http://stackoverflow.com/questions/15572357/compare-the-similarity-of-two-images-with-opencv
 
     3. Retourner des valeurs x et y de décalage pour pouvoir coller l'image 2 à l'image 1 (on oublie la rotation pour l'instant)
-
+    */
+    panorama_image = merge_process(img1, img2, -255, 10);
+    /*
     4. Afficher les deux images, avec un carré autour des zones repérées
 
     5. Si la zone correspond pas, permettre à l'utilisateur de cliquer sur un bouton reessayer
@@ -116,6 +119,7 @@ void panorama_process(Mat img1, Mat img2)
 
     */
 
+    imshow("Image Panorama", panorama_image);
     printf("Hola sortie\n");
 }
 
