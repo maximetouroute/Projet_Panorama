@@ -110,7 +110,12 @@ void panorama_process(Mat img1, Mat img2)
 
     3. Retourner des valeurs x et y de décalage pour pouvoir coller l'image 2 à l'image 1 (on oublie la rotation pour l'instant)
     */
-    panorama_image = merge_process(img1, img2, -255, 10);
+
+    panorama_image = merge_process(img1, img2, -200, 100);
+    imshow("Image Panorama 1 ", panorama_image);
+
+    panorama_image = merge_process(img1, img2, -255, 0);
+    imshow("Image Panorama 2", panorama_image);
     /*
     4. Afficher les deux images, avec un carré autour des zones repérées
 
@@ -119,7 +124,10 @@ void panorama_process(Mat img1, Mat img2)
 
     */
 
-    imshow("Image Panorama", panorama_image);
+
+
+
+
     printf("Hola sortie\n");
 }
 
