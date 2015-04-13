@@ -13,7 +13,7 @@ void readme();
  * @function main
  * @brief Main function
  */
-void flann_process( Mat img_1, Mat img_2 )
+float flann_process( Mat img_1, Mat img_2 )
 {
 
   if( !img_1.data || !img_2.data )
@@ -51,8 +51,6 @@ void flann_process( Mat img_1, Mat img_2 )
     if( dist > max_dist ) max_dist = dist;
   }
 
-  printf("-- Max dist : %f \n", max_dist );
-  printf("-- Min dist : %f \n", min_dist );
 
   //-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
   //-- or a small arbitary value ( 0.02 ) in the event that min_dist is very
@@ -64,6 +62,9 @@ void flann_process( Mat img_1, Mat img_2 )
   { if( matches[i].distance <= max(2*min_dist, 0.02) )
     { good_matches.push_back( matches[i]); }
   }
+
+  printf("-- Max dist : %f \n", max_dist );
+  printf("-- Min dist : %f \n", min_dist );
 
   //-- Draw only "good" matches
   Mat img_matches;
@@ -77,5 +78,38 @@ void flann_process( Mat img_1, Mat img_2 )
   for( int i = 0; i < (int)good_matches.size(); i++ )
   { printf( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  \n", i, good_matches[i].queryIdx, good_matches[i].trainIdx ); }
 
+    // On récupère la distance entre les deux points les + distants (ou un truc comme ca)
+    int distance_max_x = 0, distance_max_y = 0;
+
+    for( int i = 0; i < (int)keypoints_1.size()-1 ; i++ )
+    {
+        printf("x: %d, y: %d \n", keypoints_2[i].pt.x, keypoints_2[i].pt.y);
+
+        for(int j = i ; j < (int)keypoints_1.size()-1 ; j++)
+        {
+
+            float distance_x = (keypoints_2[i].pt.x - keypoints_2[j].pt.x);
+
+            float distance_y = (keypoints_2[i].pt.y - keypoints_2[j].pt.y);
+
+
+            if (distance_max_x < distance_x)
+            {
+                distance_max_x = distance_x;
+            }
+
+            if (distance_max_y < distance_y)
+            {
+                distance_max_y = distance_y;
+            }
+        }
+    }
+
+
   waitKey(0);
+    printf("DISTANCE:%f",distance_max_x*distance_max_y);
+   // On renvoit une pondération
+    return (distance_max_x*distance_max_y) ;
+
+    return 0;
 }

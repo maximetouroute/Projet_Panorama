@@ -71,7 +71,6 @@ void panorama_process(Mat img1, Mat img2)
     cvtColor(img2, gray2, CV_RGB2GRAY );
 
     // Etape 1: On découpe la première image en petits éléments carrés
-
     Mat part_img1[gray1.rows*gray1.cols/GRID_SIZE];
 
     // Stockage des parties d'images dans un vecteur
@@ -79,17 +78,36 @@ void panorama_process(Mat img1, Mat img2)
 
     image_to_grid(gray1, vect_part_img1, GRID_SIZE); // grid_size doit etre compatible avec l'image ! (pour l'instant TODO)
 
-    for(vector<Mat>::iterator it=vect_part_img1.begin(); it!=vect_part_img1.end(); it++){
+
+    vector<float> ponderations;
+
+    int i = 0;
+    for(vector<Mat>::iterator it=vect_part_img1.begin(); it!=vect_part_img1.end() ; it++, i++)
+    {
         detection_process(*it);
-        flann_process(*it,img2);
+        ponderations.push_back( flann_process(*it,img2) );
+        printf("PONDERATION:%d\n", ponderations[i]);
     }
 
     imshow("grid", makeCanvas(vect_part_img1, 512, 4));
     imshow("img2 gray", gray2);
 
 
+    panorama_image = merge_process(img1, img2, -200, 100);
+    imshow("Image Panorama 1 ", panorama_image);
 
-    // Etape 2: A l'aide d'un algorithme, on attribue des poids à chaque case
+    panorama_image = merge_process(img1, img2, -255, 0);
+    imshow("Image Panorama 2", panorama_image);
+
+
+
+    printf("Hola sortie\n");
+
+}
+
+
+/* VIEUX STUFF
+// Etape 2: A l'aide d'un algorithme, on attribue des poids à chaque case
 
 
 
@@ -111,13 +129,7 @@ void panorama_process(Mat img1, Mat img2)
         http://stackoverflow.com/questions/15572357/compare-the-similarity-of-two-images-with-opencv
 
     3. Retourner des valeurs x et y de décalage pour pouvoir coller l'image 2 à l'image 1 (on oublie la rotation pour l'instant)
-    */
 
-    panorama_image = merge_process(img1, img2, -200, 100);
-    imshow("Image Panorama 1 ", panorama_image);
-
-    panorama_image = merge_process(img1, img2, -255, 0);
-    imshow("Image Panorama 2", panorama_image);
 
     /*
     4. Afficher les deux images, avec un carré autour des zones repérées
@@ -126,9 +138,6 @@ void panorama_process(Mat img1, Mat img2)
     Et ça sera déjà bien.
     */
 
-    printf("Hola sortie\n");
-
-}
 
 
 
