@@ -26,7 +26,6 @@ Mat merge_process(Mat img1, Mat img2, int offset_x, int offset_y)
     img2.copyTo(tmp);
 
     return dst;
-
 }
 
 

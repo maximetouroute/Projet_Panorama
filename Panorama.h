@@ -92,7 +92,7 @@ void panorama_process(Mat img1, Mat img2)
 
 
     // Plus le poids est élevé, plus la portion d'image a des zones d'intérêt faciles à identifier
-  // int poids_img1[100];
+    // int poids_img1[100];
 
     // Etape 3: On prend la case de poids le + élevé de l'image 1, et on la teste avec l'image 2
     /* Méthode précise à définir.
@@ -116,19 +116,16 @@ void panorama_process(Mat img1, Mat img2)
 
     panorama_image = merge_process(img1, img2, -255, 0);
     imshow("Image Panorama 2", panorama_image);
+
     /*
     4. Afficher les deux images, avec un carré autour des zones repérées
 
     5. Si la zone correspond pas, permettre à l'utilisateur de cliquer sur un bouton reessayer
     Et ça sera déjà bien.
-
     */
 
-
-
-
-
     printf("Hola sortie\n");
+
 }
 
 
