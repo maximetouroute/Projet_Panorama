@@ -1,6 +1,7 @@
 
 #include "Canvas.h"
 #include "Detection.h"
+#include "Flann.h"
 #include "Merge.h"
 #define GRID_SIZE 128
 
@@ -80,6 +81,7 @@ void panorama_process(Mat img1, Mat img2)
 
     for(vector<Mat>::iterator it=vect_part_img1.begin(); it!=vect_part_img1.end(); it++){
         detection_process(*it);
+        flann_process(*it,img2);
     }
 
     imshow("grid", makeCanvas(vect_part_img1, 512, 4));
