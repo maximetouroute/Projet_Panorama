@@ -1,21 +1,29 @@
-#include <stdio.h>
-#include <iostream>
-#include "opencv2/core/core.hpp"
-#include "opencv2/features2d/features2d.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/nonfree/features2d.hpp"
+#include "FlannC.h"
 
-using namespace cv;
-
-void readme();
-
-/**
- * @function main
- * @brief Main function
- */
-float flann_process( Mat img_1, Mat img_2 )
+FlannC::FlannC()
 {
+    ponderation=0;
+    distance_max_x=0;
+    distance_max_y=0;
+}
 
+FlannC::~FlannC()
+{
+}
+
+float FlannC::getPonderation(){
+    return ponderation;
+}
+
+Point FlannC::getKeypoints_matched1(int i){
+    return keypoints_matched1[i];
+}
+
+Point FlannC::getKeypoints_matched2(int i){
+    return keypoints_matched2[i];
+}
+
+void FlannC::flannC_process( Mat img_1, Mat img_2 ){
   if( !img_1.data || !img_2.data )
   { std::cout<< " --(!) Error reading images " << std::endl; }
 
@@ -75,23 +83,27 @@ float flann_process( Mat img_1, Mat img_2 )
   //-- Show detected matches
   imshow( "Good Matches", img_matches );
 
-  for( int i = 0; i < (int)good_matches.size(); i++ )
-  { printf( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  \n", i, good_matches[i].queryIdx, good_matches[i].trainIdx ); }
+  for(int i=0; i<good_matches.size();i++)
+  {
+  //On perd en précision car se sont des int et non plus des float
+        Point kp1(keypoints_1[good_matches[i].queryIdx].pt.x,keypoints_1[good_matches[i].queryIdx].pt.y);
+        Point kp2(keypoints_2[good_matches[i].trainIdx].pt.x,keypoints_2[good_matches[i].trainIdx].pt.y);
+        keypoints_matched1.push_back(kp1);
+        keypoints_matched2.push_back(kp2);
+
+    printf("keypoint 1: x= %d  y= %d      keypoint 2: x=%d  y= %d\n", keypoints_matched1[i].x, keypoints_matched1[i].y, keypoints_matched2[i].x, keypoints_matched2[i].y);
+  }
 
     // On récupère la distance entre les deux points les + distants (ou un truc comme ca)
-    int distance_max_x = 0, distance_max_y = 0;
 
-    for( int i = 0; i < (int)keypoints_1.size()-1 ; i++ )
+    for( int i = 0; i < (int)keypoints_matched2.size()-1 ; i++ )
     {
-        printf("x: %d, y: %d \n", keypoints_2[i].pt.x, keypoints_2[i].pt.y);
-
-        for(int j = i ; j < (int)keypoints_1.size()-1 ; j++)
+        for(int j = i ; j < (int)keypoints_matched2.size()-1 ; j++)
         {
+//On prend la valeur absolue car on calcule des distances
+            float distance_x = fabs(keypoints_matched2[i].x - keypoints_matched2[j].x);
 
-            float distance_x = (keypoints_2[i].pt.x - keypoints_2[j].pt.x);
-
-            float distance_y = (keypoints_2[i].pt.y - keypoints_2[j].pt.y);
-
+            float distance_y = fabs(keypoints_matched2[i].y - keypoints_matched2[j].y);
 
             if (distance_max_x < distance_x)
             {
@@ -105,11 +117,9 @@ float flann_process( Mat img_1, Mat img_2 )
         }
     }
 
+  printf("DISTANCE:%d\n",distance_max_x+distance_max_y);
 
-  waitKey(0);
-    printf("DISTANCE:%f",distance_max_x*distance_max_y);
+    ponderation=distance_max_x+distance_max_y;
    // On renvoit une pondération
-    return (distance_max_x*distance_max_y) ;
 
-    return 0;
 }

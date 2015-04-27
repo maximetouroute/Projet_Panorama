@@ -1,8 +1,8 @@
 
 #include "Canvas.h"
 #include "Detection.h"
-#include "Flann.h"
 #include "Merge.h"
+#include "FlannC.h"
 #define GRID_SIZE 128
 
 using namespace cv;
@@ -78,16 +78,32 @@ void panorama_process(Mat img1, Mat img2)
 
     image_to_grid(gray1, vect_part_img1, GRID_SIZE); // grid_size doit etre compatible avec l'image ! (pour l'instant TODO)
 
-
-    vector<float> ponderations;
+//On stocke tous les FlannC que nous allons faire afin de retrouver la pondération et les keypoints
+    vector<FlannC> flann;
 
     int i = 0;
     for(vector<Mat>::iterator it=vect_part_img1.begin(); it!=vect_part_img1.end() ; it++, i++)
     {
         detection_process(*it);
-        ponderations.push_back( flann_process(*it,img2) );
-        printf("PONDERATION:%d\n", ponderations[i]);
+        FlannC f;
+        flann.push_back(f);
+        flann[i].flannC_process(*it,img2);
+        printf("\n\n\n");
+        waitKey(0);
     }
+
+//Détermine le meilleure pondération ainsi que l'indice de 'image correspondante
+    float meilleure_ponderation=10000;
+    int indice_meilleure_ponderation;
+    for(int i=0;i<flann.size();i++){
+        float ponderation=flann[i].getPonderation();
+        if(ponderation<meilleure_ponderation && ponderation!=0){
+            meilleure_ponderation=ponderation;
+            indice_meilleure_ponderation=i;
+        }
+    }
+    printf("meilleure pondération: %f  image: %d", meilleure_ponderation, indice_meilleure_ponderation);
+    waitKey(0);
 
     imshow("grid", makeCanvas(vect_part_img1, 512, 4));
     imshow("img2 gray", gray2);
@@ -99,9 +115,6 @@ void panorama_process(Mat img1, Mat img2)
     panorama_image = merge_process(img1, img2, -255, 0);
     imshow("Image Panorama 2", panorama_image);
 
-
-
-    printf("Hola sortie\n");
 
 }
 
