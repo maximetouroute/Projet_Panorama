@@ -1,3 +1,7 @@
+/*
+* Methode permettant l'affichage de plusieurs images sous la forme d'une grille
+*/
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>

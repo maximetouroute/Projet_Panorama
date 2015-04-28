@@ -26,9 +26,9 @@ class FlannC
         float ponderation;
         int distance_max_x;
         int distance_max_y;
-//les points qui match de la petite image
+        //les points qui match de la petite image
         vector<Point> keypoints_matched1;
-//les points qui match de la grande image. Les indices correspondent.
+        //les points qui match de la grande image. Les indices correspondent.
         vector<Point> keypoints_matched2;
 };
 

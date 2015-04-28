@@ -56,31 +56,38 @@ void image_to_grid(Mat img, vector<Mat>& mat_array, int grid_size)
 Retourne le panorama
 Paramètres : les deux images à fusionner
 */
-void panorama_process(Mat img1, Mat img2)
+Mat panorama_process(Mat img1, Mat img2)
 {
     // L'image finale
     Mat panorama_image;
 
-    // Etape 0: Faire un process pour se débarasser des informations que l'on veut pas pour la fusion panorama.
-    // noir et blanc ?
-    // Image de detection de contours ?
+    /********* Etape 0: Pré-traitement pour se débarasser des informations que l'on veut pas pour la fusion panorama *********/
+
+
+    // On passe img1 et img2 en noir et blanc
 
     Mat gray1(img1.rows, img1.cols, CV_8UC1); // CV8UC1 means 8 bits, 1channel.
     Mat gray2(img2.rows, img2.cols, CV_8UC1);
 
     cvtColor(img1, gray1, CV_RGB2GRAY );
-
     cvtColor(img2, gray2, CV_RGB2GRAY );
 
-    // Etape 1: On découpe la première image en petits éléments carrés
-    Mat part_img1[gray1.rows*gray1.cols/GRID_SIZE];
 
+    /********* Etape 1: On découpe la première image en petits éléments carrés *********/
+
+
+    Mat part_img1[gray1.rows*gray1.cols/GRID_SIZE];
     // Stockage des parties d'images dans un vecteur
     vector<Mat> vect_part_img1;
+    // grid_size doit etre adapté aux dimensions de l'image ! (pour l'instant TODO)
+    image_to_grid(gray1, vect_part_img1, GRID_SIZE);
 
-    image_to_grid(gray1, vect_part_img1, GRID_SIZE); // grid_size doit etre adapté aux dimensions de l'image ! (pour l'instant TODO)
 
-//On stocke tous les FlannC que nous allons faire afin de retrouver la pondération et les keypoints
+
+    /********* Etape 2: Application de l'algorithme Flann pour repérer les similitudes entre l'image et les parties d'image *********/
+
+
+    //On stocke tous les FlannC que nous allons faire afin de retrouver la pondération et les keypoints
     vector<FlannC> flann;
 
     int i = 0;
@@ -94,8 +101,12 @@ void panorama_process(Mat img1, Mat img2)
        // waitKey(0);
     }
 
+
+    /********* Etape 3: On repère l'iteration de l'algorithme qui a donné les meilleurs resultats*********/
+
+
     //Détermine le meilleure pondération ainsi que l'indice de 'image correspondante
-float meilleure_ponderation=10000;
+    float meilleure_ponderation=10000;
     int indice_meilleure_ponderation;
     for(int i=0;i<flann.size();i++){
         float ponderation=flann[i].getPonderation();
@@ -107,8 +118,10 @@ float meilleure_ponderation=10000;
     printf("meilleure pondération: %f  image: %d", meilleure_ponderation, indice_meilleure_ponderation);
     //waitKey(0);
 
-    /**************** On fusionne les deux images à l'aide des résultats obtenus via la meilleure ponderation ***********/
 
+    /********* Etape 4: On fusionne les deux images à l'aide des résultats obtenus via la meilleure iteration de l'algorithme *********/
+
+    // TODO: ameliorer cette partie pour qu'elle marche tout le temps (solution: stocker les positions des differents carres ? une classe ?)
     // Recuperation des coordonnees des deux points à superposer (dans le repere de image 2)
     // numero de colonne : le reste de la division de hein.
     int offset_colonnes = indice_meilleure_ponderation % (IMAGE_SIZE/GRID_SIZE);
@@ -141,56 +154,6 @@ float meilleure_ponderation=10000;
     int decalage_x = image_x-miniature_x;
     int decalage_y = image_y-miniature_y;
     panorama_image = merge_process(img1, img2, decalage_x, decalage_y);
-    imshow("Image Panorama Finale ", panorama_image);
-    /*imshow("grid", makeCanvas(vect_part_img1, 512, 4));
-    imshow("img2 gray", gray2);
 
-
-    panorama_image = merge_process(img1, img2, -200, 100);
-    imshow("Image Panorama 1 ", panorama_image);
-
-    panorama_image = merge_process(img1, img2, -255, 0);
-    imshow("Image Panorama 2", panorama_image);*/
-
-
+    return panorama_image;
 }
-
-
-/* VIEUX STUFF
-// Etape 2: A l'aide d'un algorithme, on attribue des poids à chaque case
-
-
-
-    // Plus le poids est élevé, plus la portion d'image a des zones d'intérêt faciles à identifier
-    // int poids_img1[100];
-
-    // Etape 3: On prend la case de poids le + élevé de l'image 1, et on la teste avec l'image 2
-    /* Méthode précise à définir.
-
-    1. Utiliser avec le morceau d'img1 le + probable de coller :
-        Par défaut: poids élevé, et sur le coté droit de l'image (à faire évoluer plus tard)
-        (celà dépend du sens de fusion (si le morceau est opposé au sens de fusion, ça colle pas.
-        Par défaut
-
-    2. Tester la similarité de cet élément avec l'autre image. On s'embête pas et on utilise un algo d'OpenCV pour ça:
-        (on fera nous même plus tard si on a le temps)
-
-        http://docs.opencv.org/doc/tutorials/features2d/feature_flann_matcher/feature_flann_matcher.html
-        http://stackoverflow.com/questions/15572357/compare-the-similarity-of-two-images-with-opencv
-
-    3. Retourner des valeurs x et y de décalage pour pouvoir coller l'image 2 à l'image 1 (on oublie la rotation pour l'instant)
-
-
-    /*
-    4. Afficher les deux images, avec un carré autour des zones repérées
-
-    5. Si la zone correspond pas, permettre à l'utilisateur de cliquer sur un bouton reessayer
-    Et ça sera déjà bien.
-    */
-
-
-
-
-
-
-
