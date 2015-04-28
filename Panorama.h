@@ -4,6 +4,7 @@
 #include "Merge.h"
 #include "FlannC.h"
 #define GRID_SIZE 128
+#define IMAGE_SIZE 512
 
 using namespace cv;
 using namespace std;
@@ -89,10 +90,10 @@ void panorama_process(Mat img1, Mat img2)
         flann.push_back(f);
         flann[i].flannC_process(*it,img2);
         printf("\n\n\n");
-        waitKey(0);
+       // waitKey(0);
     }
 
-//Détermine le meilleure pondération ainsi que l'indice de 'image correspondante
+    //Détermine le meilleure pondération ainsi que l'indice de 'image correspondante
     float meilleure_ponderation=10000;
     int indice_meilleure_ponderation;
     for(int i=0;i<flann.size();i++){
@@ -103,9 +104,24 @@ void panorama_process(Mat img1, Mat img2)
         }
     }
     printf("meilleure pondération: %f  image: %d", meilleure_ponderation, indice_meilleure_ponderation);
-    waitKey(0);
+    //waitKey(0);
 
-    imshow("grid", makeCanvas(vect_part_img1, 512, 4));
+    // L'offset x                                    //Nombre de cases en x
+    int miniature_x = flann[indice_meilleure_ponderation].getKeypoints_matched1(0).x;
+
+    int miniature_y = flann[indice_meilleure_ponderation].getKeypoints_matched1(0).y;
+
+    int image_x =  flann[indice_meilleure_ponderation].getKeypoints_matched2(0).x;
+
+    int image_y = flann[indice_meilleure_ponderation].getKeypoints_matched2(0).y;
+
+
+    printf("\nminiature x : %f\nminiature y : %f\nx: %f\ny: %f\n", miniature_x, miniature_y, image_x, image_y);
+
+
+   // panorama_image = merge_process(img1, img2, image_x, image_y);
+   // imshow("Image Panorama Finale ", panorama_image);
+    /*imshow("grid", makeCanvas(vect_part_img1, 512, 4));
     imshow("img2 gray", gray2);
 
 
@@ -113,7 +129,7 @@ void panorama_process(Mat img1, Mat img2)
     imshow("Image Panorama 1 ", panorama_image);
 
     panorama_image = merge_process(img1, img2, -255, 0);
-    imshow("Image Panorama 2", panorama_image);
+    imshow("Image Panorama 2", panorama_image);*/
 
 
 }

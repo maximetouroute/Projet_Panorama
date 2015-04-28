@@ -117,9 +117,9 @@ void FlannC::flannC_process( Mat img_1, Mat img_2 ){
         }
     }
 
-  printf("DISTANCE:%d\n",distance_max_x+distance_max_y);
+    printf("DISTANCE:%d\n",distance_max_x+distance_max_y);
 
+    // On cree une ponderation
     ponderation=distance_max_x+distance_max_y;
-   // On renvoit une pondération
 
 }
