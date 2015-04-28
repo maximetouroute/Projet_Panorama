@@ -32,6 +32,7 @@ void image_to_grid(Mat img, vector<Mat>& mat_array, int grid_size)
 
         int index = 0;
 
+        // Boucle sur les lignes
         for(int i = 0 ; i < img.rows ; i+=grid_size )
         {
             //Boucle sur les colonnes
@@ -77,7 +78,7 @@ void panorama_process(Mat img1, Mat img2)
     // Stockage des parties d'images dans un vecteur
     vector<Mat> vect_part_img1;
 
-    image_to_grid(gray1, vect_part_img1, GRID_SIZE); // grid_size doit etre compatible avec l'image ! (pour l'instant TODO)
+    image_to_grid(gray1, vect_part_img1, GRID_SIZE); // grid_size doit etre adapté aux dimensions de l'image ! (pour l'instant TODO)
 
 //On stocke tous les FlannC que nous allons faire afin de retrouver la pondération et les keypoints
     vector<FlannC> flann;
@@ -94,7 +95,7 @@ void panorama_process(Mat img1, Mat img2)
     }
 
     //Détermine le meilleure pondération ainsi que l'indice de 'image correspondante
-    float meilleure_ponderation=10000;
+float meilleure_ponderation=10000;
     int indice_meilleure_ponderation;
     for(int i=0;i<flann.size();i++){
         float ponderation=flann[i].getPonderation();
@@ -106,21 +107,41 @@ void panorama_process(Mat img1, Mat img2)
     printf("meilleure pondération: %f  image: %d", meilleure_ponderation, indice_meilleure_ponderation);
     //waitKey(0);
 
-    // L'offset x                                    //Nombre de cases en x
-    int miniature_x = flann[indice_meilleure_ponderation].getKeypoints_matched1(0).x;
+    /**************** On fusionne les deux images à l'aide des résultats obtenus via la meilleure ponderation ***********/
 
-    int miniature_y = flann[indice_meilleure_ponderation].getKeypoints_matched1(0).y;
+    // Recuperation des coordonnees des deux points à superposer (dans le repere de image 2)
+    // numero de colonne : le reste de la division de hein.
+    int offset_colonnes = indice_meilleure_ponderation % (IMAGE_SIZE/GRID_SIZE);
+
+    // numero de ligne : le nombre de fois truc dans truc.
+    int offset_lignes = 0;
+
+    int indice = (IMAGE_SIZE / GRID_SIZE);
+
+    while(indice < indice_meilleure_ponderation)
+    {
+        indice += (IMAGE_SIZE / GRID_SIZE);
+        offset_lignes++;
+    }
+
+
+
+    int miniature_x = offset_colonnes*GRID_SIZE + flann[indice_meilleure_ponderation].getKeypoints_matched1(0).x;
+
+    int miniature_y = offset_lignes*GRID_SIZE + flann[indice_meilleure_ponderation].getKeypoints_matched1(0).y;
 
     int image_x =  flann[indice_meilleure_ponderation].getKeypoints_matched2(0).x;
 
     int image_y = flann[indice_meilleure_ponderation].getKeypoints_matched2(0).y;
 
 
-    printf("\nminiature x : %f\nminiature y : %f\nx: %f\ny: %f\n", miniature_x, miniature_y, image_x, image_y);
+    printf("\nminiature x : %i\nminiature y : %i\nx: %i\ny: %i\n", miniature_x, miniature_y, image_x, image_y);
+    printf("offset lignes : %i\noffset colonne:%i\n", offset_lignes, offset_colonnes);
 
-
-   // panorama_image = merge_process(img1, img2, image_x, image_y);
-   // imshow("Image Panorama Finale ", panorama_image);
+    int decalage_x = image_x-miniature_x;
+    int decalage_y = image_y-miniature_y;
+    panorama_image = merge_process(img1, img2, decalage_x, decalage_y);
+    imshow("Image Panorama Finale ", panorama_image);
     /*imshow("grid", makeCanvas(vect_part_img1, 512, 4));
     imshow("img2 gray", gray2);
 
