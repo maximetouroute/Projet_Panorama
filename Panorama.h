@@ -98,7 +98,7 @@ Mat panorama_process(Mat img1, Mat img2)
         flann.push_back(f);
         flann[i].flannC_process(*it,img2);
         printf("\n\n\n");
-       // waitKey(0);
+        waitKey(0);
     }
 
 
@@ -115,7 +115,7 @@ Mat panorama_process(Mat img1, Mat img2)
             indice_meilleure_ponderation=i;
         }
     }
-    printf("meilleure pondération: %f  image: %d", meilleure_ponderation, indice_meilleure_ponderation);
+    printf("meilleure pondération: %f  image: %d, p:", meilleure_ponderation, indice_meilleure_ponderation);
     //waitKey(0);
 
 
