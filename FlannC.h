@@ -13,23 +13,23 @@ using namespace cv;
 
 class FlannC
 {
-    public:
-        FlannC();
-        virtual ~FlannC();
-        float getPonderation();
-        Point getKeypoints_matched1(int i);
-        Point getKeypoints_matched2(int i);
-        void flannC_process( Mat img_1, Mat img_2 );
+public:
+	FlannC();
+	virtual ~FlannC();
+	float getPonderation();
+	Point getKeypoints_matched1(int i);
+	Point getKeypoints_matched2(int i);
+	void flannC_process( Mat img_1, Mat img_2 );
 
 
-    private:
-        float ponderation;
-        int distance_max_x;
-        int distance_max_y;
-        //les points qui match de la petite image
-        vector<Point> keypoints_matched1;
-        //les points qui match de la grande image. Les indices correspondent.
-        vector<Point> keypoints_matched2;
+private:
+	float ponderation;
+	int distance_max_x;
+	int distance_max_y;
+	//les points qui match de la petite image
+	vector<Point> keypoints_matched1;
+	//les points qui match de la grande image. Les indices correspondent.
+	vector<Point> keypoints_matched2;
 };
 
 #endif // FLANNC_H
