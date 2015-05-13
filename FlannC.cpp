@@ -90,7 +90,7 @@ void FlannC::flannC_process( Mat img_1, Mat img_2 )
 	             vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
 
 	//-- Show detected matches
-	imshow( "Good Matches", img_matches );
+	imwrite("img/matches.jpg", img_matches );
 
 	for (int i = 0; i < good_matches.size(); i++)
 	{

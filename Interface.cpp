@@ -8,17 +8,17 @@ using namespace cv;
 using namespace std;
 
 void loadImage(Image& image, FileChooserButton& file, Mat& imageMatrix);
-void fusionImage(Mat& image1, Mat& image2, Mat& resultMatrix, Image& result);
+void fusionImage(Mat& image1, Mat& image2, Mat& resultMatrix, Image& result, Image& matches);
 
 int main(int argc, char* argv[])
 {
-    /*-------------------------- Initialisation de gtkmm -------------------------*/
+    /**-------------------------- Initialisation de gtkmm -------------------------*/
     Main app(argc, argv);
 
-    /*-------------------------- Création de la fenêtre ------------------------------*/
+    /**-------------------------- Création de la fenêtre ------------------------------*/
     Window fenetre;
 
-    /*---------------------- Initialisation de la fenêtre --------------------------*/
+    /**---------------------- Initialisation de la fenêtre --------------------------*/
     fenetre.set_title("Merginator Deluxe");
     fenetre.resize(960, 480);
     fenetre.maximize();
@@ -26,12 +26,12 @@ int main(int argc, char* argv[])
 
 
 
-    /*---------------------- MISE EN PLACE DU CONTENU DE LA FENÊTRE --------------------*/
+    /**---------------------- MISE EN PLACE DU CONTENU DE LA FENÊTRE --------------------*/
 
     // La barre d'onglets
     Notebook selector;
 
-    /*---------------------- Diverses propriétés de la fenêtre ----------------------------*/
+    /**---------------------- Diverses propriétés de la fenêtre ----------------------------*/
 
     //S'il y a trop d'onglets, nous pouvons naviguer à l'aide de flèche
     selector.set_scrollable();
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 
 
 
-    /*-------------------- Premier onglet ------------------------*/
+    /**-------------------- Premier onglet ------------------------*/
 
     // L'entier qui gère la place occupée par les boutons
     int space = 15;
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
 
 
 
-    /*-------------------- Deuxième onglet ------------------------*/
+    /**-------------------- Deuxième onglet ------------------------*/
 
     // La table pour ranger les widgets
     Table table2(space, 1, true);
@@ -133,7 +133,7 @@ int main(int argc, char* argv[])
 
 
 
-    /*-------------------- Troisième onglet ------------------------*/
+    /**-------------------- Troisième onglet ------------------------*/
 
     // La table pour ranger les widgets
     Table table3(space, 1, true);
@@ -150,8 +150,6 @@ int main(int argc, char* argv[])
     // Le bouton pour afficher le résultat
     Button fusion("FUSION");
 
-    fusion.signal_clicked().connect(sigc::bind<Mat&, Mat&, Mat&, Image&>(sigc::ptr_fun(fusionImage), image1Matrix, image2Matrix, resultMatrix, result));
-
     // On place les boutons dans la table
     buttons3.attach(fusion, 1, 2, 0, 1);
 
@@ -162,23 +160,30 @@ int main(int argc, char* argv[])
     // On place dans la barre d'onglets la boite
     selector.append_page(table3, "Rendu Panorama");
 
+    /**-------------------- Quatrième onglet ------------------------*/
+
+    // L'image qui contient l'exemple
+    Image matches;
+
+    // On place dans la barre d'onglets la boite
+    selector.append_page(matches, "Exemple de fonctionnement");
+
+
+    // On est obligé de faire la connection ici car le quatrième onglet n'était pas créé avant
+    fusion.signal_clicked().connect(sigc::bind<Mat&, Mat&, Mat&, Image&, Image&>(sigc::ptr_fun(fusionImage), image1Matrix, image2Matrix, resultMatrix, result, matches));
 
 
 
 
 
 
-
-
-
-
-    /*----- Ajout de la barre d'onglets à la fenêtre -----*/
+    /**----- Ajout de la barre d'onglets à la fenêtre -----*/
     fenetre.add(selector);
 
-    /*----- Affichage de tous les widgets -----*/
+    /**----- Affichage de tous les widgets -----*/
     fenetre.show_all();
 
-    /*----- Lancement de la boucle principale permettant l'affichage -----*/
+    /**----- Lancement de la boucle principale permettant l'affichage -----*/
     Main::run(fenetre);
 
     return 0;
@@ -190,9 +195,16 @@ void loadImage(Image& image, FileChooserButton& file, Mat& imageMatrix)
     imageMatrix = imread(file.get_filename(), CV_LOAD_IMAGE_COLOR);
 }
 
-void fusionImage(Mat& image1, Mat& image2, Mat& resultMatrix, Image& result)
+void fusionImage(Mat& image1, Mat& image2, Mat& resultMatrix, Image& result, Image& matches)
 {
     resultMatrix = panorama_process(image1, image2);
-    imwrite("img/result.jpg", resultMatrix);
-    //result.set("img/result.jpg");
+
+    Rect rect(250,250,900,600);
+    Mat cropResult = resultMatrix(rect);
+    resize(cropResult, cropResult, Size(870, 580), 0, 0, INTER_LINEAR);
+
+    imwrite("img/result.jpg", cropResult);
+
+    result.set("img/result.jpg");
+    matches.set("img/matches.jpg");
 }
