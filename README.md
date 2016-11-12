@@ -26,6 +26,8 @@ For a better estimation, we added a ponderation to avoid wrong estimations such 
 
 ## Practical example with real & dirty pictures
 
-![](https://github.com/maximetouroute/Projet_Panorama/blob/master/img/6.jpg)
+Initial pictures :
+![](https://github.com/maximetouroute/Projet_Panorama/blob/master/readme_img/6.jpg)
+
 And the result : 
 ![](https://github.com/maximetouroute/Projet_Panorama/blob/master/img/result.jpg)
