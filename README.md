@@ -6,7 +6,7 @@ A simple panorama stitching Proof of concept in C++ using OpenCV2, [FLANN](http:
 
 ## Algorithm flow
 
-We want to merge two pictures from a panorama
+We want to merge two pictures from a panorama : 
 ![](https://github.com/maximetouroute/Projet_Panorama/blob/master/readme_img/1.jpg)
 
 For doing so, we split one image onto smaller areas, and turn them in black and white :
@@ -20,9 +20,13 @@ For a better estimation, we added a ponderation to avoid wrong estimations such 
 
 ![](https://github.com/maximetouroute/Projet_Panorama/blob/master/readme_img/4.jpg)
 
+
+
 ## A quick look at the GUI made with GTK
 
 ![](https://github.com/maximetouroute/Projet_Panorama/blob/master/readme_img/5.jpg)
+
+
 
 ## Practical example with real & dirty pictures
 
